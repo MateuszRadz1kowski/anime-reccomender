@@ -3,47 +3,62 @@ import requests
 def get_user_data():
     query = '''
         query {
-      MediaListCollection(userId:6880062, type: ANIME) {
-        lists {
-          entries {
-            repeat
-            score
-            status
-            media {
-              title {
-                english
-              }
-              id
-              favourites
-              format
-              genres
-              idMal
-              isAdult
-              meanScore
-              popularity
-              recommendations {
-                nodes {
-                  mediaRecommendation {
-                    id
-                    title {
-                      english
-                    }
-                  }
-                }
-              }
-              tags {
+  MediaListCollection(userId:6880062, type: ANIME) {
+    lists {
+      entries {
+        repeat
+        score
+        status
+        media {
+          title {
+            english
+          }
+          id
+          favourites
+          format
+          genres
+          idMal
+          isAdult
+          meanScore
+          popularity
+          recommendations {
+            nodes {
+              mediaRecommendation {
                 id
-                name
-                rank
+                title {
+                  english
+                }
               }
             }
           }
+          tags {
+            id
+            name
+            rank
+            userId
+          }
         }
-        }
+      }
     }
+    }
+  User(id:6880062) {
+    mediaListOptions {
+      scoreFormat
+    }
+    favourites {
+      anime {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+}
         '''
     variables = {'page': 1}
     url = 'https://graphql.anilist.co'
-    response = requests.post(url, json={'query': query, 'variables': variables})
+    response = requests.post(url, json={'query': query,
+                                        # 'variables': variables
+                                        })
     res = response.json()
     return res

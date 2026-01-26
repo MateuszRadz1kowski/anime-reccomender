@@ -1,4 +1,2 @@
-./
 backend/app/ingestion/database_config.ini
-__pycache__/
 .idea/
