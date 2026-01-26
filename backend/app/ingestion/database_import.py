@@ -1,4 +1,6 @@
 import psycopg2
+
+from backend.scripts.tag_count import count_tags
 from config import load_config
 from anilist_export_data import anilist_export_data, anilist_pack_data_to_db
 
@@ -42,6 +44,7 @@ while True:
     anime_data_packed = anilist_pack_data_to_db(anime_data)
 
     if anime_data_packed:
+        count_tags(anime_data_packed)
         insert_anime_data(config, anime_data_packed)
     else:
         print(f"No media found on page {page}, skipping.")

@@ -4,15 +4,13 @@ import time
 
 def anilist_export_data(page_number):
     query = '''
-    query ($page: Int) {
-        Page (page: $page) {
-            pageInfo {
-                currentPage
-                hasNextPage
-                perPage
-            }
-            media {
-                id
+    query MostPopularAnime($page: Int) {
+  Page(page: $page) {
+    media(
+      type: ANIME
+      sort: POPULARITY_DESC
+    ) {
+      id
                 idMal
                 title { english }
                 tags { id rank }
@@ -26,9 +24,14 @@ def anilist_export_data(page_number):
                 recommendations {
                     nodes { mediaRecommendation { id } }
                 }
-            }
-        }
     }
+    pageInfo {
+      hasNextPage
+      total
+    }
+  }
+}
+
     '''
     variables = {'page': page_number}
     url = 'https://graphql.anilist.co'
@@ -92,33 +95,4 @@ def anilist_pack_data_to_db(res):
         except Exception as e:
             print(f"Skipping anime due to error: {e}")
             continue
-
     return result
-
-
-# query
-# User($name: String) {
-#     User(name: $name) {
-#     name
-# id
-# mediaListOptions
-# {
-#     scoreFormat
-# }
-# favourites
-# {
-#     anime
-# {
-#     nodes
-# {
-#     title
-# {
-#     english
-# }
-# id
-#
-# }
-# }
-# }
-# }
-# }
