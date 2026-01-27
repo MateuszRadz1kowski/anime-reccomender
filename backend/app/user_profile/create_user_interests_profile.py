@@ -1,5 +1,6 @@
-from sympy.codegen.ast import continue_
+import math
 
+from backend.scripts.tag_count import export_tag_count, get_tag_popularity_weight
 from get_user_data import get_user_data
 
 def score_multiplier(score_100):
@@ -39,19 +40,14 @@ def user_tag_profile(entry, score_format, user_tags):
         tag_id = tag['id']
         tag_rank = tag['rank']
 
-        tag_score = 1000 * tag_rank * multiplier
+        tag_score = 100 * tag_rank * multiplier
 
         if tag_name not in user_tags:
             user_tags[tag_name] = {
                 "id": tag_id,
                 "score": 0
             }
-
-        user_tags[tag_name]["score"] += tag_score
-
-            
-
-
+        user_tags[tag_name]["score"] += tag_score * get_tag_popularity_weight(tag)
 
 def create_user_interests_profile():
     data = get_user_data()
@@ -63,16 +59,30 @@ def create_user_interests_profile():
     for entry in entries:
         user_tag_profile(entry, score_format, user_tags)
 
+    normalise_tag_score(user_tags)
+
     sorted_tags = sorted(
         user_tags.items(),
         key=lambda x: x[1]['score'],
         reverse=True
     )
 
-    print(sorted_tags)
+    return sorted_tags
 
 
-create_user_interests_profile()
+def normalise_tag_score(user_tags):
+    sum_sq = 0.0
+    for tag in user_tags.values():
+        sum_sq += tag["score"] ** 2
+
+    norm = math.sqrt(sum_sq)
+
+    for tag in user_tags.values():
+        tag["score"] /= norm
+
+    return user_tags
+
+print(create_user_interests_profile())
 
 
 
