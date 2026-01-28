@@ -2,6 +2,8 @@ import math
 from collections import defaultdict
 import json
 
+from backend.config.reccomender_values_settings import TAG_WEIGHT_BASE_BONUS
+
 tags_counted = defaultdict(int)
 
 def count_tags(anime_data_packed):
@@ -21,7 +23,7 @@ def get_tag_popularity_weight(tag):
     tag_count = export_tag_count()
     #log((tag with max count + some number so tags with very few instances arent lost) / tag count + some number so tags with very few instances arent lost)) ** number to normalise less popular and more popular tags
     #tag_weight = (math.log((4759 + 100) / tag_count[tag["id"]] + 100)) **1.5
-    tag_weight = math.log((4759+100)/(100+tag_count[tag["id"]]))
+    tag_weight = math.log1p((4759+TAG_WEIGHT_BASE_BONUS)/(TAG_WEIGHT_BASE_BONUS+tag_count[tag["id"]]))
     return tag_weight
 
 

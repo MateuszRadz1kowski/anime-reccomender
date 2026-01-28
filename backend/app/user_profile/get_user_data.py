@@ -2,8 +2,8 @@ import requests
 
 def get_user_data():
     query = '''
-        query {
-  MediaListCollection(userId:6880062, type: ANIME) {
+        query($userName : String) {
+  MediaListCollection(userName:$userName, type: ANIME) {
     lists {
       entries {
         repeat
@@ -41,7 +41,7 @@ def get_user_data():
       }
     }
     }
-  User(id:6880062) {
+  User(name:$userName) {
     mediaListOptions {
       scoreFormat
     }
@@ -55,10 +55,8 @@ def get_user_data():
   }
 }
         '''
-    variables = {'page': 1}
+    variables = {'userName':'Radzik123'}
     url = 'https://graphql.anilist.co'
-    response = requests.post(url, json={'query': query,
-                                        # 'variables': variables
-                                        })
+    response = requests.post(url, json={'query': query, 'variables': variables})
     res = response.json()
     return res
