@@ -18,4 +18,4 @@ def score_multiplier(score_100):
     if score_100 < 95: return 2.45
     if score_100 < 98: return 2.6
     if score_100 < 100: return 2.7
-    return 3.0
+    if score_100 == 100: return 3.0
