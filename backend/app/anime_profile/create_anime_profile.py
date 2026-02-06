@@ -1,16 +1,17 @@
 import math
 from backend.app.anime_profile.check_filters import check_if_adult, check_format, check_season_year, check_show_planning
 from backend.app.anime_profile.user_anime_status import user_anime_status
-from backend.config.reccomender_values_settings import ANIME_PROFILE_GENRE_MODIFIER, mean_score_multiplier
+from backend.config.reccomender_values_settings import ANIME_PROFILE_GENRE_MODIFIER, mean_score_multiplier, \
+    anime_favourites_multiplier, ANIME_USER_PLANNING_MULTIPLIER, ANIME_PROFILE_API_RECOMMENDATIONS_MODIFIER
 
 
 def create_anime_profile(db_response,user_interests_profile):
     anime_profile = {}
     anime_completed = user_anime_status(0)
-    anime_planning = user_anime_status(1)
+    anime_planning = user_anime_status(2)
     for anime in db_response:
         anime_name = anime[2]
-
+        anime_score = 0
         if anime_name in anime_completed:
             continue
 
@@ -23,16 +24,26 @@ def create_anime_profile(db_response,user_interests_profile):
                 if anime_name not in anime_profile:
                     anime_profile[anime_name] = 0
                 else:
-                    anime_profile[anime_name] += tag_rank * user_interests_profile[0].get(tag_name)
+                    anime_score += tag_rank * user_interests_profile[0][tag_name]
+
         for genre in anime[6]:
             if genre in user_interests_profile[1]:
                 if anime_name not in anime_profile:
                     anime_profile[anime_name] = 0
                 else:
-                    anime_profile[anime_name] += ANIME_PROFILE_GENRE_MODIFIER * user_interests_profile[1].get(genre)
-            anime_profile[anime_name] = anime_profile[anime_name] * mean_score_multiplier(anime[11]) * math.log1p(anime[10])
-        else:
-            continue
+                    anime_score += ANIME_PROFILE_GENRE_MODIFIER * user_interests_profile[1][genre]
+
+        if anime_name in anime_planning:
+            anime_score *= ANIME_USER_PLANNING_MULTIPLIER
+
+        if anime_name in user_interests_profile[2]:
+            anime_score += ANIME_PROFILE_API_RECOMMENDATIONS_MODIFIER * user_interests_profile[2][anime_name]
+
+        anime_score * mean_score_multiplier(anime[11])
+        anime_score * anime_favourites_multiplier(anime[10])
+
+        anime_profile[anime_name] = anime_score
+
     normalise_score(anime_profile)
 
     sorted_anime_profile = sorted(

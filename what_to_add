@@ -1,15 +1,8 @@
 Reccomendations alghorithm
     anime_profile
         mnozenie wyniku anime przez:
-            popularnosc
-            reccomendations - gdy uzytkownik oberzal i dobrze ocenil dane anime z rekomendaci to boost
-            gdy status planning u usera lekki boost
             negatywne punkty gdy nie lubi
         filtry:
-            isAdult
-            format
-            season year
-            czy status planning pokazywac
             czy pokazywac nastepne sezony danego anime, np aot s1 aot s2 itp
             rozne sortowanie
             jakis tryb z bardzo dziwnymi ciekawymi nietypowymi rekomendacjami

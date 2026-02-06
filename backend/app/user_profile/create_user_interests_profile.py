@@ -1,5 +1,6 @@
 import math
 
+from backend.app.user_profile.completed_anime_reccomendations_ import create_completed_anime_recommendations
 from backend.app.user_profile.create_user_tag_profile import user_tag_profile
 from backend.app.user_profile.user_genre_profile import user_genre_profile
 from backend.app.user_profile.get_user_data import get_user_data
@@ -11,17 +12,21 @@ def create_user_interests_profile():
 
     user_tags = {}
     user_genres = {}
+    completed_anime_recommendations = {}
 
     for entry in entries:
         user_tag_profile(entry, user_data, user_tags)
         user_genre_profile(entry, user_data, user_genres)
+        create_completed_anime_recommendations(entry, user_data, completed_anime_recommendations)
 
     user_tags = normalise_score(user_tags)
     user_genres = normalise_score(user_genres)
+    completed_anime_recommendations = normalise_score(completed_anime_recommendations)
 
     user_tags = sort_interests(user_tags)
     user_genres = sort_interests(user_genres)
-    return user_tags,user_genres
+    completed_anime_recommendations = sort_interests(completed_anime_recommendations)
+    return user_tags,user_genres,completed_anime_recommendations
 
 
 def normalise_score(user_interests):

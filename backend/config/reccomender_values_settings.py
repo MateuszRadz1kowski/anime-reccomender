@@ -1,7 +1,11 @@
+import math
+
 REPEAT_MULTIPLIER = 1 #in code repeat + multiplier, so if repeated once *2, twice *3
 USER_FAVOURITES_MULTIPLIER = 2
 TAG_WEIGHT_BASE_BONUS = 100
-ANIME_PROFILE_GENRE_MODIFIER = 30 #from 0 to 100, based on tag rank, it determines importance of genre in relation to tags
+ANIME_PROFILE_GENRE_MODIFIER = 15 #from 0 to 100, based on tag rank, it determines importance of genre in relation to tags
+ANIME_PROFILE_API_RECOMMENDATIONS_MODIFIER = 20
+ANIME_USER_PLANNING_MULTIPLIER = 1.5
 def score_multiplier(score_100):
     if score_100 < 15: return 0.3
     if score_100 < 30: return 0.45
@@ -35,3 +39,6 @@ def mean_score_multiplier(score_100):
     if score_100 < 88: return 2.5
     if score_100 < 90: return 2.7
     if score_100 < 100: return 3
+
+def anime_favourites_multiplier(favourites):
+    return math.log1p(favourites)
