@@ -2,12 +2,9 @@ Reccomendations alghorithm
     anime_profile
         mnozenie wyniku anime przez:
             popularnosc
-            favourites
-            mean score
             reccomendations - gdy uzytkownik oberzal i dobrze ocenil dane anime z rekomendaci to boost
             gdy status planning u usera lekki boost
             negatywne punkty gdy nie lubi
-            nie pokazuje tego co uzytkownik uz obejrzal
         filtry:
             isAdult
             format

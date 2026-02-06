@@ -46,6 +46,3 @@ def sort_interests(user_interests):
             reverse=True
         )
     )
-
-
-
