@@ -10,6 +10,9 @@ def create_anime_profile(db_response,user_interests_profile):
     anime_completed = user_anime_status(0)
     anime_planning = user_anime_status(2)
     for anime in db_response:
+        if len(anime_profile) >= 100:
+            break
+
         anime_name = anime[2]
         anime_score = 0
         if anime_name in anime_completed:
@@ -39,18 +42,19 @@ def create_anime_profile(db_response,user_interests_profile):
         if anime_name in user_interests_profile[2]:
             anime_score += ANIME_PROFILE_API_RECOMMENDATIONS_MODIFIER * user_interests_profile[2][anime_name]
 
-        anime_score * mean_score_multiplier(anime[11])
+        if anime[11] is not None:
+            anime_score * mean_score_multiplier(anime[11])
         anime_score * anime_favourites_multiplier(anime[10])
 
         anime_profile[anime_name] = anime_score
-
     normalise_score(anime_profile)
-
-    sorted_anime_profile = sorted(
+    sorted_anime_profile = dict(
+        sorted(
             anime_profile.items(),
             key=lambda x: x[1],
             reverse=True
         )
+    )
     return sorted_anime_profile
 
 def normalise_score(anime):

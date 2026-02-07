@@ -18,13 +18,5 @@ user moze podac ze aktualnie szuka daneg typu anime np seinen i dostae to wielki
 statystyki dla mojego wglądu
 
 dane do zawarcia w finalnej liscie rekomendacji:
-    title {english}
     score po normalizacji np 0.22
     dlaczego dane anime zostalo polecone np: bo tag kaiju, battle royal
-    description
-    episodes
-    format
-    coverImage {extraLarge}
-    trailer {id,site}
-    seasonYear
-    season
