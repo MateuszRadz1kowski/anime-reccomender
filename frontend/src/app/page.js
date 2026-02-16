@@ -1,15 +1,19 @@
 "use client";
+import { useEffect, useState } from "react";
 import LoginPage from "./loginPage/page";
 import Recommendations from "./recommendations/page";
 
 export default function Home() {
-	return (
-		<div>
-			{localStorage.getItem("username") != null ? (
-				<Recommendations />
-			) : (
-				<LoginPage />
-			)}
-		</div>
-	);
+	const [username, setUsername] = useState(null);
+	const [isLoaded, setIsLoaded] = useState(false);
+
+	useEffect(() => {
+		const storedUser = localStorage.getItem("username");
+		setUsername(storedUser);
+		setIsLoaded(true);
+	}, []);
+
+	if (!isLoaded) return null;
+
+	return <div>{username != null ? <Recommendations /> : <LoginPage />}</div>;
 }

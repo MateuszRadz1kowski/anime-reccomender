@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 export default function LoginPage() {
 	const router = useRouter();
 
-	const localHostSetUsername = (e) => {
+	const localStorageSetUsername = (e) => {
 		const username = e.target.previousElementSibling.value;
 		console.log(username);
 		localStorage.setItem("username", username);
@@ -55,7 +55,7 @@ export default function LoginPage() {
 								/>
 								<Button
 									className="bg-white text-black hover:bg-zinc-200"
-									onClick={(e) => localHostSetUsername(e)}
+									onClick={(e) => localStorageSetUsername(e)}
 								>
 									<Search size={18} />
 								</Button>
@@ -70,7 +70,7 @@ export default function LoginPage() {
 								/>
 								<Button
 									className="bg-white text-black hover:bg-zinc-200"
-									onClick={(e) => localHostSetUsername(e)}
+									onClick={(e) => localStorageSetUsername(e)}
 								>
 									<Search size={18} />
 								</Button>
