@@ -88,7 +88,7 @@ export default function Recommendation({ recommendationData: data }) {
 
 						<div className="bg-[#0f172a]/80 p-3 rounded-lg border border-purple-500/20 shadow-inner">
 							<p className="text-[10px] font-black text-purple-400 uppercase mb-2 flex items-center gap-1 tracking-tighter">
-								<Info className="w-3 h-3" /> Recommendation Logic:
+								<Info className="w-3 h-3" /> Recommended because you like:
 							</p>
 							<div className="flex flex-wrap gap-1.5">
 								{Object.entries(data.why_recommended)
