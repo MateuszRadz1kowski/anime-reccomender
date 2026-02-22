@@ -38,6 +38,7 @@ async def get_recommendations(
 
     media_types: Optional[List[str]] = Query(["Anime", "Movie", "OVA"])
 ):
+    print(show_sequels, experimental_mode, show_18_rated, tag_importance, popularity_importance, min_number_episodes, max_number_episodes, min_release_year, max_release_year, min_mean_score, studios, tags, genres, media_types)
     data = prepare_dictionary()
 
     return data

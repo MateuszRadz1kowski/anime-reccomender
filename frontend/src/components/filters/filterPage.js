@@ -23,8 +23,13 @@ import {
 } from "@/components/ui/select";
 import { Input } from "../ui/input";
 import { Slider } from "../ui/slider";
+import { useState } from "react";
 
 export default function FilterPage() {
+	const [sequelsChecked, setSequelsChecked] = useState(true);
+	const [experimentalModeChecked, setExperimentalModeChecked] = useState(false);
+	const [showAdultChecked, setShowAdultChecked] = useState(true);
+
 	const tags = [
 		"Psychological",
 		"Time Travel",
@@ -37,214 +42,333 @@ export default function FilterPage() {
 
 	const studios = ["MAPPA", "Madhouse", "Wit Studio", "Ufotable", "Bones"];
 
+	const [filters, setFilters] = useState({
+		show_sequels: null,
+		experimental_mode: null,
+		show_adult: null,
+		tag_importance: null,
+		popularity_importance: null,
+		min_episodes: null,
+		max_episodes: null,
+		min_year: null,
+		max_year: null,
+		min_score: null,
+		studios: null,
+		tags: null,
+		genres: null,
+		media_type: null,
+	});
+
+	const defaultValues = {
+		show_sequels: true,
+		experimental_mode: false,
+		show_adult: true,
+		tag_importance: "medium",
+		popularity_importance: "medium",
+		min_episodes: 1,
+		max_episodes: 9999,
+		min_year: 1900,
+		max_year: new Date().getFullYear(),
+		min_score: 0,
+		studios: [null],
+		tags: [null],
+		genres: [null],
+		media_type: ["Anime", "Movie", "OVA"],
+	};
+
+	const updateFilter = (key, value) => {
+		setFilters((prev) => ({
+			...prev,
+			[key]: value,
+		}));
+	};
+
+	const handleCheckbox = (key, checked) => {
+		if (checked === defaultValues[key]) {
+			updateFilter(key, null);
+		} else {
+			updateFilter(key, checked);
+		}
+	};
+
+	const handleApply = () => {
+		const params = Object.fromEntries(
+			Object.entries(filters).filter(([_, value]) => value !== null),
+		);
+
+		const queryString = new URLSearchParams(params).toString();
+
+		console.log("Wysyłam do API:", queryString);
+
+		fetch(`http://127.0.0.1:8000/recommendations_data?${queryString}`)
+			.then((res) => res.json())
+			.then((data) => {
+				console.log("Odpowiedź:", data);
+			});
+	};
+
+	const handleClear = () => {
+		setFilters({
+			show_sequels: null,
+			experimental_mode: null,
+			show_adult: null,
+			tag_importance: null,
+			popularity_importance: null,
+			min_episodes: null,
+			max_episodes: null,
+			min_year: null,
+			max_year: null,
+			min_score: null,
+			studios: null,
+			tags: null,
+			genres: null,
+			media_type: null,
+		});
+	};
+
 	return (
-		<div className="h-screen overflow-hidden bg-[#0b1120]">
-			<div className="h-full overflow-y-auto px-4 py-6 space-y-8 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+		<div className="min-h-screen bg-[#0b1120] text-white p-6">
+			<h1 className="text-2xl font-semibold mb-4">Filters</h1>
+
+			<div className="flex gap-3 mb-6">
+				<Button
+					onClick={handleApply}
+					className="bg-purple-600 hover:bg-purple-500"
+				>
+					Apply Filters
+				</Button>
+
+				<Button
+					onClick={handleClear}
+					variant="outline"
+					className="border-slate-700 text-slate-200 hover:bg-slate-800"
+				>
+					Clear Filters
+				</Button>
+			</div>
+
+			<Card className="bg-[#0f172a] border border-slate-800 p-6 space-y-4">
+				{/* SHOW SEQUELS */}
+				<div className="flex items-center gap-3">
+					<Checkbox
+						checked={filters.show_sequels ?? defaultValues.show_sequels}
+						onCheckedChange={(checked) =>
+							handleCheckbox("show_sequels", checked)
+						}
+					/>
+					<Label>Show sequels</Label>
+				</div>
+
+				{/* EXPERIMENTAL MODE */}
+				<div className="flex items-center gap-3">
+					<Checkbox
+						checked={
+							filters.experimental_mode ?? defaultValues.experimental_mode
+						}
+						onCheckedChange={(checked) =>
+							handleCheckbox("experimental_mode", checked)
+						}
+					/>
+					<Label>Experimental mode</Label>
+				</div>
+
+				{/* SHOW 18+ */}
+				<div className="flex items-center gap-3">
+					<Checkbox
+						checked={filters.show_adult ?? defaultValues.show_adult}
+						onCheckedChange={(checked) => handleCheckbox("show_adult", checked)}
+					/>
+					<Label>Show 18+ rated</Label>
+				</div>
+			</Card>
+
+			<Card className="mt-6 bg-[#0f172a] border border-slate-800 p-6 space-y-4">
+				{/* TAG IMPORTANCE */}
 				<div>
-					<h2 className="text-xl font-semibold text-white">Filters</h2>
+					<Select
+						value={filters.tag_importance ?? ""}
+						onValueChange={(value) => updateFilter("tag_importance", value)}
+					>
+						<SelectTrigger className="bg-slate-900 border-slate-700 text-slate-100">
+							<SelectValue placeholder="Tag Importance" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								<SelectItem value="low">Low</SelectItem>
+								<SelectItem value="medium">Medium</SelectItem>
+								<SelectItem value="high">High</SelectItem>
+							</SelectGroup>
+						</SelectContent>
+					</Select>
+				</div>
+
+				{/* POPULARITY IMPORTANCE */}
+				<div>
+					<Select
+						value={filters.popularity_importance ?? ""}
+						onValueChange={(value) =>
+							updateFilter("popularity_importance", value)
+						}
+					>
+						<SelectTrigger className="bg-slate-900 border-slate-700 text-slate-100">
+							<SelectValue placeholder="Popularity Influence" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								<SelectItem value="low">Low</SelectItem>
+								<SelectItem value="medium">Medium</SelectItem>
+								<SelectItem value="high">High</SelectItem>
+							</SelectGroup>
+						</SelectContent>
+					</Select>
+				</div>
+			</Card>
+
+			<Card className="mt-6 bg-[#0f172a] border border-slate-800 p-6 space-y-4">
+				{/* EPISODES */}
+				<Input
+					type="number"
+					placeholder="Minimum episodes"
+					className="bg-slate-900 border-slate-700 text-slate-100"
+					onChange={(e) =>
+						updateFilter(
+							"min_episodes",
+							e.target.value ? Number(e.target.value) : null,
+						)
+					}
+				/>
+
+				<Input
+					type="number"
+					placeholder="Maximum episodes"
+					className="bg-slate-900 border-slate-700 text-slate-100"
+					onChange={(e) =>
+						updateFilter(
+							"max_episodes",
+							e.target.value ? Number(e.target.value) : null,
+						)
+					}
+				/>
+			</Card>
+
+			<Card className="mt-6 bg-[#0f172a] border border-slate-800 p-6 space-y-4">
+				<div>
+					<Input
+						type="number"
+						placeholder="Minimum release year (e.g. 2005)"
+						className="bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
+					/>
+					<Input
+						type="number"
+						placeholder="Maximum release year (e.g. 2023)"
+						className="mt-3 bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
+					/>
+					<Button className="mt-2 bg-purple-600 hover:bg-purple-500">
+						Apply Release Year Filter
+					</Button>
+				</div>
+			</Card>
+
+			<Card className="mt-6 bg-[#0f172a] border border-slate-800 text-slate-100 p-6 space-y-6">
+				<div>
+					<Label className="mb-2 text-slate-300">
+						Show items with mean score at least:
+					</Label>
+					<Slider defaultValue={[75]} max={100} step={1} className="w-full" />
+				</div>
+
+				<div>
+					<Combobox items={studios}>
+						<ComboboxInput
+							placeholder="Filter by studio (e.g. MAPPA)"
+							className="bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
+						/>
+						<ComboboxContent>
+							<ComboboxEmpty>No studio found.</ComboboxEmpty>
+							<ComboboxList>
+								{(item) => (
+									<ComboboxItem key={item} value={item}>
+										{item}
+									</ComboboxItem>
+								)}
+							</ComboboxList>
+						</ComboboxContent>
+					</Combobox>
+					<Button className="mt-2 bg-purple-600 hover:bg-purple-500">
+						Add Studio
+					</Button>
+				</div>
+
+				<div>
+					<Switch className="w-10 h-5" />
+					<Label className="ml-2 text-slate-300">
+						Show or hide selected tags
+					</Label>
+
+					<Combobox items={tags}>
+						<ComboboxInput
+							placeholder="Filter by tag (e.g. Psychological)"
+							className="mt-3 bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
+						/>
+						<ComboboxContent>
+							<ComboboxEmpty>No tag found.</ComboboxEmpty>
+							<ComboboxList>
+								{(item) => (
+									<ComboboxItem key={item} value={item}>
+										{item}
+									</ComboboxItem>
+								)}
+							</ComboboxList>
+						</ComboboxContent>
+					</Combobox>
 
 					<Button className="mt-2 bg-purple-600 hover:bg-purple-500">
-						Apply Filters
+						Add Tag
 					</Button>
-
-					<Button
-						className="ml-2 border-slate-700 text-slate-200 hover:bg-slate-800"
-						variant="outline"
-					>
-						Clear Filters
-					</Button>
-
-					<Card className="mt-4 bg-[#0f172a] border border-slate-800 text-slate-100 p-6 space-y-4">
-						<div className="flex items-center gap-3">
-							<Checkbox />
-							<Label className="text-slate-300">Show sequels</Label>
-						</div>
-
-						<div className="flex items-center gap-3">
-							<Checkbox />
-							<Label className="text-slate-300">Experimental mode</Label>
-						</div>
-
-						<div className="flex items-center gap-3">
-							<Checkbox />
-							<Label className="text-slate-300">Show 18+ rated</Label>
-						</div>
-					</Card>
-
-					<Card className="mt-6 bg-[#0f172a] border border-slate-800 text-slate-100 p-6 space-y-4">
-						<div>
-							<Select>
-								<SelectTrigger className="w-[250px] bg-slate-900 border-slate-700 text-slate-100">
-									<SelectValue placeholder="Tag Importance in recommendation" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										<SelectItem value="low">Low</SelectItem>
-										<SelectItem value="medium">Medium</SelectItem>
-										<SelectItem value="high">High</SelectItem>
-									</SelectGroup>
-								</SelectContent>
-							</Select>
-						</div>
-
-						<div>
-							<Select>
-								<SelectTrigger className="w-[250px] bg-slate-900 border-slate-700 text-slate-100">
-									<SelectValue placeholder="Popularity influence" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										<SelectItem value="negative">Boost Underrated</SelectItem>
-										<SelectItem value="low">Low</SelectItem>
-										<SelectItem value="medium">Medium</SelectItem>
-										<SelectItem value="high">High</SelectItem>
-									</SelectGroup>
-								</SelectContent>
-							</Select>
-						</div>
-					</Card>
-
-					<Card className="mt-6 bg-[#0f172a] border border-slate-800 text-slate-100 p-6 space-y-6">
-						<div>
-							<Input
-								type="number"
-								placeholder="Minimum number of episodes (e.g. 12)"
-								className="bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
-							/>
-							<Input
-								type="number"
-								placeholder="Maximum number of episodes (e.g. 100)"
-								className="mt-3 bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
-							/>
-							<Button className="mt-2 bg-purple-600 hover:bg-purple-500">
-								Apply Episode Count Filter
-							</Button>
-						</div>
-
-						<div>
-							<Input
-								type="number"
-								placeholder="Minimum release year (e.g. 2005)"
-								className="bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
-							/>
-							<Input
-								type="number"
-								placeholder="Maximum release year (e.g. 2023)"
-								className="mt-3 bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
-							/>
-							<Button className="mt-2 bg-purple-600 hover:bg-purple-500">
-								Apply Release Year Filter
-							</Button>
-						</div>
-					</Card>
-
-					<Card className="mt-6 bg-[#0f172a] border border-slate-800 text-slate-100 p-6 space-y-6">
-						<div>
-							<Label className="mb-2 text-slate-300">
-								Show items with mean score at least:
-							</Label>
-							<Slider
-								defaultValue={[75]}
-								max={100}
-								step={1}
-								className="w-full"
-							/>
-						</div>
-
-						<div>
-							<Combobox items={studios}>
-								<ComboboxInput
-									placeholder="Filter by studio (e.g. MAPPA)"
-									className="bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
-								/>
-								<ComboboxContent>
-									<ComboboxEmpty>No studio found.</ComboboxEmpty>
-									<ComboboxList>
-										{(item) => (
-											<ComboboxItem key={item} value={item}>
-												{item}
-											</ComboboxItem>
-										)}
-									</ComboboxList>
-								</ComboboxContent>
-							</Combobox>
-							<Button className="mt-2 bg-purple-600 hover:bg-purple-500">
-								Add Studio
-							</Button>
-						</div>
-
-						<div>
-							<Switch className="w-10 h-5" />
-							<Label className="ml-2 text-slate-300">
-								Show or hide selected tags
-							</Label>
-
-							<Combobox items={tags}>
-								<ComboboxInput
-									placeholder="Filter by tag (e.g. Psychological)"
-									className="mt-3 bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
-								/>
-								<ComboboxContent>
-									<ComboboxEmpty>No tag found.</ComboboxEmpty>
-									<ComboboxList>
-										{(item) => (
-											<ComboboxItem key={item} value={item}>
-												{item}
-											</ComboboxItem>
-										)}
-									</ComboboxList>
-								</ComboboxContent>
-							</Combobox>
-
-							<Button className="mt-2 bg-purple-600 hover:bg-purple-500">
-								Add Tag
-							</Button>
-						</div>
-
-						<div>
-							<Combobox items={genres}>
-								<Switch className="w-10 h-5 mb-2" />
-								<Label className="ml-2 text-slate-300">
-									Show or hide selected genres
-								</Label>
-
-								<ComboboxInput
-									placeholder="Filter by genre (e.g. Sci-Fi)"
-									className="mt-3 bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
-								/>
-								<ComboboxContent>
-									<ComboboxEmpty>No genre found.</ComboboxEmpty>
-									<ComboboxList>
-										{(item) => (
-											<ComboboxItem key={item} value={item}>
-												{item}
-											</ComboboxItem>
-										)}
-									</ComboboxList>
-								</ComboboxContent>
-							</Combobox>
-
-							<Button className="mt-2 bg-purple-600 hover:bg-purple-500">
-								Add Genre
-							</Button>
-						</div>
-
-						<div>
-							<Select>
-								<SelectTrigger className="w-[200px] bg-slate-900 border-slate-700 text-slate-100">
-									<SelectValue placeholder="Select media type" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										<SelectItem value="anime">Anime</SelectItem>
-										<SelectItem value="manga">Manga</SelectItem>
-									</SelectGroup>
-								</SelectContent>
-							</Select>
-						</div>
-					</Card>
 				</div>
-			</div>
+
+				<div>
+					<Combobox items={genres}>
+						<Switch className="w-10 h-5 mb-2" />
+						<Label className="ml-2 text-slate-300">
+							Show or hide selected genres
+						</Label>
+
+						<ComboboxInput
+							placeholder="Filter by genre (e.g. Sci-Fi)"
+							className="mt-3 bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500"
+						/>
+						<ComboboxContent>
+							<ComboboxEmpty>No genre found.</ComboboxEmpty>
+							<ComboboxList>
+								{(item) => (
+									<ComboboxItem key={item} value={item}>
+										{item}
+									</ComboboxItem>
+								)}
+							</ComboboxList>
+						</ComboboxContent>
+					</Combobox>
+
+					<Button className="mt-2 bg-purple-600 hover:bg-purple-500">
+						Add Genre
+					</Button>
+				</div>
+
+				<div>
+					<Select>
+						<SelectTrigger className="w-[200px] bg-slate-900 border-slate-700 text-slate-100">
+							<SelectValue placeholder="Select media type" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								<SelectItem value="anime">Anime</SelectItem>
+								<SelectItem value="manga">Manga</SelectItem>
+							</SelectGroup>
+						</SelectContent>
+					</Select>
+				</div>
+			</Card>
 		</div>
 	);
 }
