@@ -131,6 +131,18 @@ export default function FilterPage({
 
 			Object.entries(filters).forEach(([key, value]) => {
 				if (value == null || value == undefined) return;
+
+				if (key == "show_streaming_service" && filters.media_types == "MANGA") {
+					return;
+				}
+
+				if (Array.isArray(value)) {
+					value.forEach((item) => {
+						if (item) searchParams.append(key, item);
+					});
+				} else {
+					searchParams.append(key, value);
+				}
 				if (Array.isArray(value)) {
 					value.forEach((item) => {
 						if (item) searchParams.append(key, item);

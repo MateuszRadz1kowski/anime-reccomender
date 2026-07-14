@@ -150,6 +150,9 @@ def check_show_media_type(anime, media_types):
     return False
 
 def check_show_streaming_service(anime, show_streaming_service):
+    if anime[4] in MANGA_FORMATS:
+        return True
+
     if show_streaming_service == "All":
         return True
 
