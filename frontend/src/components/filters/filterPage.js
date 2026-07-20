@@ -190,8 +190,7 @@ export default function FilterPage({
 				toast({
 					type: "info",
 					title: "No Results",
-					message:
-						"No anime matched your current filters. Try relaxing some constraints.",
+					message: `No ${filters.media_types == "MANGA" ? "manga" : "anime"} matched your current filters. Try relaxing some constraints.`,
 					duration: 5000,
 				});
 			}

@@ -2,7 +2,7 @@
 
 <img src="./frontend/public/Indoga_image_logo.png" alt="Indoga Logo" width="100" height="100" style="border-radius: 50%;"/>
 
-# INDOGA
+# [INDOGA](https://indoga.app)
 
 **Personalized Anime & Manga Discovery**
 
@@ -22,7 +22,11 @@ The goal is simple: to make finding your next favorite series an engaging experi
 
 ## 📸 Screenshots
 
-> _Coming soon_
+|                                        Discover & Filters                                         |                                            Compare Tab                                            |
+| :-----------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: |
+| <img src="https://indoga.app/Indoga_discover_tab_filters.png" width="400" alt="Discover Filters"> |        <img src="https://indoga.app/Indoga_compare_tab.png" width="400" alt="Compare Tab">        |
+|                                           **Stats Tab**                                           |                                        **Wide Grid View**                                         |
+|          <img src="https://indoga.app/Indoga_stats_tab.png" width="400" alt="Stats Tab">          | <img src="https://indoga.app/Indoga_discover_tab_wide_grid_view.png" width="400" alt="Grid View"> |
 
 ---
 

@@ -5,17 +5,17 @@ import Dashboard from "./dashboard/page";
 
 export default function Home() {
 	const [username, setUsername] = useState(null);
-	const [isLoaded, setIsLoaded] = useState(false);
+	const [isMounted, setIsMounted] = useState(false);
 
 	useEffect(() => {
 		const storedUser = localStorage.getItem("username");
 		setUsername(storedUser);
-		setIsLoaded(true);
+		setIsMounted(true);
 	}, []);
 
-	if (!isLoaded) return null;
+	if (isMounted && username && username !== "null") {
+		return <Dashboard />;
+	}
 
-	return (
-		<div>{username && username != null ? <Dashboard /> : <LoginPage />}</div>
-	);
+	return <LoginPage />;
 }
