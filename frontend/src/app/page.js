@@ -13,9 +13,17 @@ export default function Home() {
 		setIsMounted(true);
 	}, []);
 
-	if (isMounted && username && username !== "null") {
-		return <Dashboard />;
-	}
-
-	return <LoginPage />;
+	return (
+		<main
+			className={`min-h-screen bg-[#060d1b] transition-opacity duration-300 ease-in-out ${
+				isMounted ? "opacity-100" : "opacity-0"
+			}`}
+		>
+			{isMounted && username && username !== "null" ? (
+				<Dashboard />
+			) : (
+				<LoginPage />
+			)}
+		</main>
+	);
 }
